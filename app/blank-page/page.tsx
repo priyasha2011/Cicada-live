@@ -4,28 +4,42 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const fakeUrls = [
-  "mysterious-page-1",
-  "secret-location-2",
-  "hidden-path-3",
-  "enigma-4",
-  "puzzle-5",
-  "labyrinth-6",
-  "cipher-7",
-  "riddle-8",
-  "conundrum-9",
-  "final-destination-10",
+  "mysterious-page",
+  "secret-location",
+  "hidden-path",
+  "enigma",
+  "puzzle",
+  "labyrinth",
+  "cipher",
+  "riddle",
+  "conundrum",
+  "final-destination",
 ];
 
 export default function BlankPage() {
   const router = useRouter();
   const [currentUrlIndex, setCurrentUrlIndex] = useState(0);
+  const [randomizedUrls, setRandomizedUrls] = useState<string[]>([]);
+
+  useEffect(() => {
+    
+    setRandomizedUrls(shuffleArray([...fakeUrls]));
+  }, []);
+
+  const shuffleArray = (array:any) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  };
 
   const handleClick = () => {
     if (currentUrlIndex < fakeUrls.length - 1) {
       const nextIndex = currentUrlIndex + 1;
       setCurrentUrlIndex(nextIndex);
 
-      window.history.pushState({}, "", fakeUrls[nextIndex]);
+      window.history.pushState({}, "", randomizedUrls[nextIndex]);
     } else {
       router.push("/sum");
     }
@@ -34,7 +48,7 @@ export default function BlankPage() {
   useEffect(() => {
     const handlePopState = () => {
       const currentUrl = window.location.pathname.replace("/", "");
-      const index = fakeUrls.indexOf(currentUrl);
+      const index = randomizedUrls.indexOf(currentUrl);
       if (index >= 0) {
         setCurrentUrlIndex(index);
       }
@@ -44,13 +58,13 @@ export default function BlankPage() {
     return () => {
       window.removeEventListener("popstate", handlePopState);
     };
-  }, []);
+  }, [randomizedUrls]);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.history.pushState({}, "", fakeUrls[currentUrlIndex]);
+    if (typeof window !== "undefined" && randomizedUrls.length > 0) {
+      window.history.pushState({}, "", randomizedUrls[currentUrlIndex]);
     }
-  }, [currentUrlIndex]);
+  }, [currentUrlIndex, randomizedUrls]);
 
   return (
     <div
@@ -66,13 +80,15 @@ export default function BlankPage() {
         onClick={handleClick}
         style={{
           padding: "10px 20px",
-          background: "#007bff",
+          background: "#0000",
           color: "white",
           border: "none",
           cursor: "pointer",
         }}
       >
-        {currentUrlIndex < fakeUrls.length - 1 ? "Next Page" : "Back to Start"}
+        {currentUrlIndex < fakeUrls.length - 1
+          ? "http://localhost:3000/" + randomizedUrls[currentUrlIndex + 1]
+          : "Back to Start"}
       </button>
     </div>
   );

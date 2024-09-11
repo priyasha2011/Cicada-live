@@ -20,10 +20,28 @@ const Item = styled(Paper)(({ theme }) => ({
   cursor: 'pointer',
 }));
 
-const images = Array.from({ length: 20 }, (_, i) => ({
-  img: `https://source.unsplash.com/random/300x200?sig=${i}`,
-  title: `Image ${i + 1}`,
-}));
+const images = [
+  { img: '/image1.jpg', title: 'Image 1' },
+  { img: '/image2.jpg', title: 'Image 2' },
+  { img: '/image3.jpg', title: 'Image 3' },
+  { img: '/image4.jpg', title: 'Image 4' },
+  { img: '/image5.jpg', title: 'Image 5' },
+  { img: '/image6.jpg', title: 'Image 6' },
+  { img: '/image7.jpg', title: 'Image 7' },
+  { img: '/image8.jpg', title: 'Image 8' },
+  { img: '/image9.jpg', title: 'Image 9' },
+  { img: '/image10.jpg', title: 'Image 10' },
+  { img: '/image11.jpg', title: 'Image 11' },
+  { img: '/image12.jpg', title: 'Image 12' },
+  { img: '/image13.jpg', title: 'Image 13' },
+  { img: '/image14.jpg', title: 'Image 14' },
+  { img: '/image15.jpg', title: 'Image 15' },
+  { img: '/image16.jpg', title: 'Image 16' },
+  { img: '/image17.jpg', title: 'Image 17' },
+  { img: '/image18.jpg', title: 'Image 18' },
+  { img: '/image19.jpg', title: 'Image 19' },
+  { img: '/image20.jpg', title: 'Image 20' },
+];
 
 export default function Sum() {
   const [startIndex, setStartIndex] = React.useState(0);
@@ -52,7 +70,7 @@ export default function Sum() {
         <Grid container spacing={2}>
           {images.slice(startIndex, startIndex + 20).map((item, index) => (
             <Grid item xs={12} sm={6} md={2.4} key={index}>
-              <ImageClickHandler>
+              <ImageClickHandler index={startIndex + index}>
                 <Item>
                   <img
                     src={item.img}
