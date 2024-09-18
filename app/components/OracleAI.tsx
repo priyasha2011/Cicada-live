@@ -70,6 +70,44 @@ const darkTheme = createTheme({
 });
 
 const OracleAI = () => {
+    useEffect(() => {
+        const handleContextMenu = (event: MouseEvent) => {
+          event.preventDefault();
+        };
+    
+        const handleCopy = (event: ClipboardEvent) => {
+          event.preventDefault();
+        };
+    
+        const handlePaste = (event: ClipboardEvent) => {
+          event.preventDefault();
+        };
+    
+        const handleKeyDown = (event: KeyboardEvent) => {
+          if (
+            event.ctrlKey &&
+            (event.key === "c" || event.key === "v" || event.key === "x")
+          ) {
+            event.preventDefault();
+          }
+          if (event.ctrlKey && event.shiftKey && event.key === "I") {
+            event.preventDefault();
+          }
+        };
+    
+        document.addEventListener("contextmenu", handleContextMenu);
+        document.addEventListener("copy", handleCopy);
+        document.addEventListener("paste", handlePaste);
+        document.addEventListener("keydown", handleKeyDown);
+    
+        return () => {
+          document.removeEventListener("contextmenu", handleContextMenu);
+          document.removeEventListener("copy", handleCopy);
+          document.removeEventListener("paste", handlePaste);
+          document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, []);
+
     const [teamNumber, setTeamNumber] = useState('')
     const [openDialog, setOpenDialog] = useState(false)
     const [dialogMessage, setDialogMessage] = useState('')
@@ -77,9 +115,40 @@ const OracleAI = () => {
     const [showWarning, setShowWarning] = useState(false)
     const [output, setOutput] = useState<string[]>([])
     const [isStarted, setIsStarted] = useState(false)
-    const [showUltimateBox, setShowUltimateBox] = useState(false)
-    const [finalAnswer, setFinalAnswer] = useState('')
+    
+    const [showFinalImage, setShowFinalImage] = useState(false)
+    const [countdown, setCountdown] = useState(10)
     const router = useRouter()
+    const [username, setUsername] = useState('')
+
+    useEffect(() => {
+        const initializeApp = async () => {
+            console.log('Initializing app...')
+            const storedUsername = localStorage.getItem('username')
+            if (storedUsername) {
+                setUsername(storedUsername)
+            }
+
+            const storedCounter = localStorage.getItem('counter')
+            if (storedCounter) {
+                setCounter(parseInt(storedCounter, 10))
+            }
+
+            const storedIsStarted = localStorage.getItem('isStarted')
+            if (storedIsStarted) {
+                setIsStarted(storedIsStarted === 'true')
+            }
+
+            const storedOutput = localStorage.getItem('output')
+            if (storedOutput) {
+                setOutput(JSON.parse(storedOutput))
+            }
+
+            
+        }
+
+        initializeApp()
+    }, [router])
 
     useEffect(() => {
         if (counter === 5) {
@@ -88,11 +157,31 @@ const OracleAI = () => {
                 setShowWarning(false)
             }, 3000)
         } else if (counter === 7) {
-            setShowUltimateBox(true)
-        }
-    }, [counter])
+            setShowFinalImage(true)
+            const timer = setInterval(() => {
+                setCountdown((prevCount) => {
+                    if (prevCount <= 1) {
+                        clearInterval(timer)
+                        setTimeout(() => {
+                            router.push('/login')
+                        }, 1000) 
+                        return 0
+                
+                    }
+                    return prevCount - 1
+                })
+            }, 1000)
 
-    const handleSubmit = async (e: React.FormEvent) => {
+            return () => clearInterval(timer)
+        }
+
+        localStorage.setItem('counter', counter.toString())
+        localStorage.setItem('isStarted', isStarted.toString())
+        localStorage.setItem('output', JSON.stringify(output))
+        
+    }, [counter, isStarted,  output])
+
+    const handleGenerate = async (e: React.FormEvent) => {
         e.preventDefault()
         if (counter < 7) {
             const newCounter = counter + 1
@@ -101,26 +190,28 @@ const OracleAI = () => {
 
             try {
                 const numbers = generateSets()
-                setOutput(numbers.map(set => set.map(num => num.toString().padStart(2, '0')).join(' ')))
+                const newOutput = numbers.map(set => set.map(num => num.toString().padStart(2, '0')).join(' '))
+                setOutput(newOutput)
+                
             } catch (error) {
-                console.error('Error in handleSubmit:', error)
+                console.error('Error in handleGenerate:', error)
                 setDialogMessage("An error occurred. Please try again.")
                 setOpenDialog(true)
             }
         }
     }
 
-    const handleFinalSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        if (finalAnswer === '10') {
-            setDialogMessage("Congratulations! You've solved the puzzle.")
+        if (teamNumber === '10') {
+            
+            
+            router.push('/terminal-challenge')
         } else {
-            setDialogMessage("Incorrect answer. Access denied.")
-        }
-        setOpenDialog(true)
-        setTimeout(() => {
+            setDialogMessage("Incorrect answer. Please try again.")
+            setOpenDialog(true)
             router.push('/login')
-        }, 3000)
+        }
     }
 
     const handleCloseDialog = () => {
@@ -155,6 +246,8 @@ const OracleAI = () => {
         return sets
     }
 
+    
+
     return (
         <ThemeProvider theme={darkTheme}>
             <CssBaseline />
@@ -178,7 +271,7 @@ const OracleAI = () => {
                         backgroundColor: 'background.paper',
                         color: 'primary.main',
                         padding: '10px 20px',
-                        boxShadow: '0 2px 10px rgba(51, 255, 0, 0.2)',
+                        boxShadow: '0 2px 10px rgba(0, 255, 0, 0.2)',
                         position: 'fixed',
                         top: 0,
                         zIndex: 10,
@@ -206,105 +299,68 @@ const OracleAI = () => {
                     Generations: {counter}
                 </Typography>
 
-                {!showUltimateBox ? (
-                    <Box
-                        component="form"
-                        onSubmit={handleSubmit}
+                <Box
+                    component="form"
+                    onSubmit={handleSubmit}
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        padding: 4,
+                        borderRadius: 2,
+                        border: '2px solid #33ff00',
+                        backgroundColor: 'background.paper',
+                        maxWidth: '800px',
+                        width: '80%',
+                        boxShadow: '0 0 20px rgba(51, 255, 0, 0.5)',
+                    }}
+                >
+                    <Typography variant="h4" component="h1" gutterBottom sx={{ color: 'primary.main' }}>
+                        3310
+                    </Typography>
+                    <Typography variant="body1" sx={{ marginBottom: 2, whiteSpace: 'nowrap' }}>
+                        [sudo] $ enter the launch code for $/OracleAI_Hello_Player: <span style={{ display: 'inline-block', width: '15px', height: '20px', backgroundColor: '#33ff00', animation: 'blink 1s step-start infinite', verticalAlign: 'bottom' }}></span>
+                    </Typography>
+                    <TextField
+                        fullWidth
+                        variant="outlined"
+                        margin="normal"
+                        id="teamNumber"
+                        name="teamNumber"
+                        autoFocus
+                        value={teamNumber}
+                        onChange={(e) => setTeamNumber(e.target.value)}
                         sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            padding: 4,
-                            borderRadius: 2,
-                            border: '2px solid #33ff00',
-                            backgroundColor: 'background.paper',
-                            maxWidth: '800px',
-                            width: '80%',
-                            boxShadow: '0 0 20px rgba(51, 255, 0, 0.5)',
+                            input: { color: 'primary.main' },
+                            label: { color: 'primary.main' }
                         }}
+                    />
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="outlined"
+                        sx={{ mt: 3, mb: 2 }}
                     >
-                        <Typography variant="h4" component="h1" gutterBottom sx={{ color: 'primary.main' }}>
-                            3301
-                        </Typography>
-                        <Typography variant="body1" sx={{ marginBottom: 2, whiteSpace: 'nowrap' }}>
-                            [sudo] $ enter the launch code for $/OracleAI_Hello_Player: <span style={{ display: 'inline-block', width: '15px', height: '20px', backgroundColor: '#33ff00', animation: 'blink 1s step-start infinite', verticalAlign: 'bottom' }}></span>
-                        </Typography>
-                        <TextField
-                            fullWidth
-                            variant="outlined"
-                            margin="normal"
-                            id="teamNumber"
-                            name="teamNumber"
-                            autoFocus
-                            value={teamNumber}
-                            onChange={(e) => setTeamNumber(e.target.value)}
-                            sx={{
-                                input: { color: 'primary.main' },
-                                label: { color: 'primary.main' }
-                            }}
-                        />
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="outlined"
-                            sx={{ mt: 3, mb: 2 }}
-                            disabled={counter >= 7}
-                        >
-                            {!isStarted ? 'Start' : 'Generate Again'}
-                        </Button>
-                        <Box sx={{ textAlign: 'left', whiteSpace: 'pre', marginTop: 2 }}>
-                            {output.map((line, index) => (
-                                <Typography key={index} variant="body2" sx={{ color: 'primary.main' }}>{line}</Typography>
-                            ))}
-                        </Box>
-                    </Box>
-                ) : (
-                    <Box
-                        component="form"
-                        onSubmit={handleFinalSubmit}
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            padding: 4,
-                            borderRadius: 2,
-                            border: '2px solid #33ff00',
-                            backgroundColor: 'background.paper',
-                            maxWidth: '800px',
-                            width: '80%',
-                            boxShadow: '0 0 20px rgba(51, 255, 0, 0.5)',
-                        }}
+                        Submit Answer
+                    </Button>
+                    <Button
+                        onClick={handleGenerate}
+                        fullWidth
+                        variant="outlined"
+                        sx={{ mb: 2 }}
+                        disabled={counter >= 7}
                     >
-                        <Typography variant="h4" component="h1" gutterBottom sx={{ color: 'primary.main' }}>
-                            FINAL CHALLENGE
-                        </Typography>
-                        <Typography variant="body1" sx={{ marginBottom: 2, whiteSpace: 'nowrap' }}>
-                            Enter the final answer:
-                        </Typography>
-                        <TextField
-                            fullWidth
-                            variant="outlined"
-                            margin="normal"
-                            id="finalAnswer"
-                            name="finalAnswer"
-                            autoFocus
-                            value={finalAnswer}
-                            onChange={(e) => setFinalAnswer(e.target.value)}
-                            sx={{
-                                input: { color: 'primary.main' },
-                                label: { color: 'primary.main' }
-                            }}
-                        />
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="outlined"
-                            sx={{ mt: 3, mb: 2 }}
-                        >
-                            Submit Final Answer
-                        </Button>
+                        {!isStarted ? 'Start' : 'Generate Again'}
+                    </Button>
+                    <Box sx={{ textAlign: 'left', whiteSpace: 'pre', marginTop: 2 }}>
+                        {output.map((line, index) => (
+                            <Typography key={index} variant="body2" sx={{ color: 'primary.main' }}>{line}</Typography>
+                        ))}
                     </Box>
-                )}
+                    <Typography variant="body1" sx={{ marginBottom: 2, whiteSpace: 'nowrap' }}>
+                        Cause he said once, "Genius is one of the many forms of insanity" <span style={{ display: 'inline-block', width: '15px', height: '20px', backgroundColor: '#33ff00', animation: 'blink 1s step-start infinite', verticalAlign: 'bottom' }}></span>
+                    </Typography>
+                </Box>
 
                 {showWarning && (
                     <Box
@@ -325,9 +381,36 @@ const OracleAI = () => {
                         <Typography variant="h2" sx={{ color: 'white', marginBottom: 2 }}>
                             ⚠️ SYSTEM ALERT ⚠️
                         </Typography>
-                        {/* <Typography variant="h3" sx={{ color: 'white' }}>
-                            2 generations left
-                        </Typography> */}
+                    </Box>
+                )}
+
+                {showFinalImage && (
+                    <Box
+                        sx={{
+                            position: 'fixed',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            zIndex: 2,
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            flexDirection: 'column',
+                        }}
+                    >
+                        <img 
+                            src="./images/Technogreen.jpeg" 
+                            alt="Cryptic Hunt Theme" 
+                            style={{ maxWidth: '80%', maxHeight: '60%', objectFit: 'contain' }} 
+                        />
+                        <Typography variant="h4" sx={{ color: 'primary.main', marginTop: 2 }}>
+                            Sponsored by Technogreen Solutions Limited
+                        </Typography>
+                        <Typography variant="h2" sx={{ color: 'primary.main', marginTop: 2 }}>
+                            {countdown}
+                        </Typography>
                     </Box>
                 )}
 

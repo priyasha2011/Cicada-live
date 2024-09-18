@@ -14,7 +14,7 @@ import {
   DialogActions
 } from '@mui/material'
 import { handleTeamNumberSubmit } from '@/app/components/assets'
-import OracleAI from '../components/OracleAI'  // Import the OracleAI component
+import { useRouter } from 'next/navigation'
 
 const darkTheme = createTheme({
   palette: {
@@ -74,33 +74,34 @@ const CorrectPage = () => {
   const [teamNumber, setTeamNumber] = useState('')
   const [openDialog, setOpenDialog] = useState(false)
   const [dialogMessage, setDialogMessage] = useState('')
-  const [showOracleAI, setShowOracleAI] = useState(false)
+  const [isVerified, setIsVerified] = useState(false)
+  const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
       const response = await handleTeamNumberSubmit(teamNumber)
       if (response.success) {
-        setDialogMessage(JSON.stringify(response, null, 2))
-        setOpenDialog(true)
+        setDialogMessage("Team number verified. Click 'Close' to proceed to login.")
+        setIsVerified(true)
       } else {
         setDialogMessage(JSON.stringify(response, null, 2))
-        setOpenDialog(true)
+        setIsVerified(false)
       }
+      setOpenDialog(true)
     } catch (error) {
       console.error('Error in handleSubmit:', error)
       setDialogMessage("An error occurred. Please try again.")
+      setIsVerified(false)
       setOpenDialog(true)
     }
   }
 
   const handleCloseDialog = () => {
     setOpenDialog(false)
-    setShowOracleAI(true)  // Show OracleAI component when dialog is closed
-  }
-
-  if (showOracleAI) {
-    return <OracleAI />
+    // if (isVerified) {
+      router.push('/login')
+    
   }
 
   return (
@@ -133,7 +134,7 @@ const CorrectPage = () => {
           }}
         >
           <Typography variant="h4" component="h1" gutterBottom sx={{ color: 'primary.main' }}>
-            3301
+            3310
           </Typography>
           <TextField
             fullWidth

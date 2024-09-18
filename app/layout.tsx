@@ -1,9 +1,7 @@
-
-
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { BrowserRouter } from "react-router-dom";
+import Footer from "./components/footer"; // Import the Footer component
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -30,8 +28,10 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        style={{ minHeight: '100vh', position: 'relative', paddingBottom: '60px' }} // Ensure space for the footer
       >
         {children}
+        <Footer /> {/* Add the Footer component */}
       </body>
     </html>
   );
