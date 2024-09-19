@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { styled } from '@mui/material/styles';
+import { styled, keyframes } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
@@ -20,27 +20,105 @@ const Item = styled(Paper)(({ theme }) => ({
   cursor: 'pointer',
 }));
 
+const glitch = keyframes`
+  0% {
+    clip-path: inset(71% 0 10% 0);
+    transform: translate(-2px, 2px);
+  }
+  10% {
+    clip-path: inset(13% 0 55% 0);
+    transform: translate(1px, -3px);
+  }
+  20% {
+    clip-path: inset(76% 0 23% 0);
+    transform: translate(-1px, 2px);
+  }
+  30% {
+    clip-path: inset(46% 0 3% 0);
+    transform: translate(3px, 1px);
+  }
+  40% {
+    clip-path: inset(3% 0 46% 0);
+    transform: translate(1px, -1px);
+  }
+  50% {
+    clip-path: inset(82% 0 13% 0);
+    transform: translate(-1px, 2px);
+  }
+  60% {
+    clip-path: inset(46% 0 28% 0);
+    transform: translate(-2px, -2px);
+  }
+  70% {
+    clip-path: inset(67% 0 11% 0);
+    transform: translate(2px, 1px);
+  }
+  80% {
+    clip-path: inset(92% 0 3% 0);
+    transform: translate(-1px, 3px);
+  }
+  90% {
+    clip-path: inset(100% 0 1% 0);
+    transform: translate(1px, -2px);
+  }
+  100% {
+    clip-path: inset(23% 0 62% 0);
+    transform: translate(2px, 2px);
+  }
+`;
+
+const StyledTitle = styled(Typography)(({ theme }) => ({
+  position: 'relative',
+  textAlign: 'center',
+  fontSize: '6rem',
+  fontWeight: 'bold',
+  color: theme.palette.primary.main,
+  textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
+  marginBottom: theme.spacing(4),
+  fontFamily: '"Courier New", Courier, monospace',
+  letterSpacing: '0.5rem',
+  '&::before, &::after': {
+    content: '"3310"',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    overflow: 'hidden',
+    backgroundColor: 'transparent',
+  },
+  '&::before': {
+    left: '2px',
+    textShadow: '-2px 0 #ff00c1',
+    animation: `${glitch} 2s infinite linear alternate-reverse`,
+  },
+  '&::after': {
+    left: '-2px',
+    textShadow: '2px 0 #00fff9',
+    animation: `${glitch} 3s infinite linear alternate-reverse`,
+  },
+}));
+
 const images = [
-  { img: '/image1.jpg', title: 'Image 1' },
-  { img: '/image2.jpg', title: 'Image 2' },
-  { img: '/image3.jpg', title: 'Image 3' },
-  { img: '/image4.jpg', title: 'Image 4' },
-  { img: '/image5.jpg', title: 'Image 5' },
-  { img: '/image6.jpg', title: 'Image 6' },
-  { img: '/image7.jpg', title: 'Image 7' },
-  { img: '/image8.jpg', title: 'Image 8' },
-  { img: '/image9.jpg', title: 'Image 9' },
-  { img: '/image10.jpg', title: 'Image 10' },
-  { img: '/image11.jpg', title: 'Image 11' },
-  { img: '/image12.jpg', title: 'Image 12' },
-  { img: '/image13.jpg', title: 'Image 13' },
-  { img: '/image14.jpg', title: 'Image 14' },
-  { img: '/image15.jpg', title: 'Image 15' },
-  { img: '/image16.jpg', title: 'Image 16' },
-  { img: '/image17.jpg', title: 'Image 17' },
-  { img: '/image18.jpg', title: 'Image 18' },
-  { img: '/image19.jpg', title: 'Image 19' },
-  { img: '/image20.jpg', title: 'Image 20' },
+  { img: './images/pic1.jpg', title: 'Image 1' },
+  { img: './images/pic2.jpg', title: 'Image 2' },
+  { img: './images/pic3.jpg', title: 'Image 3' },
+  { img: './images/pic4.jpg', title: 'Image 4' },
+  { img: './images/pic5.jpg', title: 'Image 5' },
+  { img: './images/pic6.jpg', title: 'Image 6' },
+  { img: './images/pic7.jpg', title: 'Image 7' },
+  { img: './images/pic8.jpg', title: 'Image 8' },
+  { img: './images/pic9.jpg', title: 'Image 9' },
+  { img: './images/pic10.jpg', title: 'Image 10' },
+  { img: './images/pic11.jpg', title: 'Image 11' },
+  { img: './images/pic12.jpg', title: 'Image 12' },
+  { img: './images/pic13.jpg', title: 'Image 13' },
+  { img: './images/pic14.jpg', title: 'Image 14' },
+  { img: './images/pic15.jpg', title: 'Image 15' },
+  { img: './images/pic16.jpg', title: 'Image 16' },
+  { img: './images/pic17.jpg', title: 'Image 17' },
+  { img: './images/pic18.jpg', title: 'Image 18' },
+  { img: './images/pic19.jpg', title: 'Image 19' },
+  { img: './images/pic20.jpg', title: 'Image 20' },
 ];
 
 export default function Sum() {
@@ -55,11 +133,11 @@ export default function Sum() {
   };
 
   return (
-    <Box sx={{ flexGrow: 1, p: 3 }}>
-      <Typography variant="h4" gutterBottom>
+    <Box sx={{ flexGrow: 1, p: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <StyledTitle variant="h1">
         3310
-      </Typography>
-      <Box sx={{ position: 'relative', my: 2 }}>
+      </StyledTitle>
+      <Box sx={{ position: 'relative', my: 2, width: '100%' }}>
         <IconButton
           onClick={handlePrev}
           disabled={startIndex === 0}
@@ -78,7 +156,6 @@ export default function Sum() {
                     loading="lazy"
                     style={{ width: '100%', height: 'auto', objectFit: 'cover', aspectRatio: '3/2' }}
                   />
-                  <Typography variant="caption">{item.title}</Typography>
                 </Item>
               </ImageClickHandler>
             </Grid>

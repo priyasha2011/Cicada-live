@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { 
   Box, 
   TextField, 
@@ -71,6 +71,43 @@ const darkTheme = createTheme({
 });
 
 const CorrectPage = () => {
+  useEffect(() => {
+    const handleContextMenu = (event: MouseEvent) => {
+      event.preventDefault();
+    };
+
+    const handleCopy = (event: ClipboardEvent) => {
+      event.preventDefault();
+    };
+
+    const handlePaste = (event: ClipboardEvent) => {
+      event.preventDefault();
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (
+        event.ctrlKey &&
+        (event.key === "c" || event.key === "v" || event.key === "x")
+      ) {
+        event.preventDefault();
+      }
+      if (event.ctrlKey && event.shiftKey && event.key === "I") {
+        event.preventDefault();
+      }
+    };
+
+    document.addEventListener("contextmenu", handleContextMenu);
+    document.addEventListener("copy", handleCopy);
+    document.addEventListener("paste", handlePaste);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("contextmenu", handleContextMenu);
+      document.removeEventListener("copy", handleCopy);
+      document.removeEventListener("paste", handlePaste);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+}, []);
   const [teamNumber, setTeamNumber] = useState('')
   const [openDialog, setOpenDialog] = useState(false)
   const [dialogMessage, setDialogMessage] = useState('')
@@ -81,11 +118,8 @@ const CorrectPage = () => {
     e.preventDefault()
     try {
       const response = await handleTeamNumberSubmit(teamNumber)
-      if (response.success) {
-        setDialogMessage("Team number verified. Click 'Close' to proceed to login.")
-        setIsVerified(true)
-      } else {
-        setDialogMessage(JSON.stringify(response, null, 2))
+      if (response) {
+        setDialogMessage(response.ans)
         setIsVerified(false)
       }
       setOpenDialog(true)
@@ -97,10 +131,11 @@ const CorrectPage = () => {
     }
   }
 
+
   const handleCloseDialog = () => {
     setOpenDialog(false)
     // if (isVerified) {
-      router.push('/login')
+      router.push('/sum')
     
   }
 

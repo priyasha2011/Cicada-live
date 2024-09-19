@@ -245,9 +245,6 @@ const OracleAI = () => {
 
         return sets
     }
-
-    
-
     return (
         <ThemeProvider theme={darkTheme}>
             <CssBaseline />
@@ -406,7 +403,7 @@ const OracleAI = () => {
                             style={{ maxWidth: '80%', maxHeight: '60%', objectFit: 'contain' }} 
                         />
                         <Typography variant="h4" sx={{ color: 'primary.main', marginTop: 2 }}>
-                            Sponsored by Technogreen Solutions Limited
+                            Sponsored by Techknowgreen Solutions Limited
                         </Typography>
                         <Typography variant="h2" sx={{ color: 'primary.main', marginTop: 2 }}>
                             {countdown}
