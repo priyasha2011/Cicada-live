@@ -119,7 +119,7 @@ const OracleAI = () => {
     const [showFinalImage, setShowFinalImage] = useState(false)
     const [countdown, setCountdown] = useState(10)
     const router = useRouter()
-    
+    const [, setUsername] = useState('')
 
     useEffect(() => {
         const initializeApp = async () => {

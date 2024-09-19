@@ -1,15 +1,4 @@
-// Define an interface for the expected response structure
-interface TeamNumberResponse {
-  ans: string;  // Changed from a function to a string
-  success: boolean;
-  message: string;
-  data?: {
-    teamInfo?: string;
-    // ... other properties
-  };
-}
-
-export async function handleTeamNumberSubmit(teamNumber: string): Promise<TeamNumberResponse> {
+export async function handleTeamNumberSubmit(teamNumber: string): Promise<{ ans: string }> {
   try {
     // Trim whitespace and remove any non-digit characters
     const cleanedNumber = teamNumber.trim().replace(/\D/g, '');
