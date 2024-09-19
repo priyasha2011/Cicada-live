@@ -124,10 +124,10 @@ const OracleAI = () => {
     useEffect(() => {
         const initializeApp = async () => {
             console.log('Initializing app...')
-            const storedUsername = localStorage.getItem('username')
-            if (storedUsername) {
-                setUsername(storedUsername)
-            }
+            
+            // if (storedUsername) {
+            //     setUsername(storedUsername)
+            // }
 
             const storedCounter = localStorage.getItem('counter')
             if (storedCounter) {

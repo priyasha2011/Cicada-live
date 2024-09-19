@@ -20,7 +20,7 @@ export async function handleTeamNumberSubmit(teamNumber: string): Promise<{ ans:
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    return await response.json();
+    return await response.json() as TeamNumberResponse;
   } catch (error) {
     console.error('Error submitting team number:', error);
     throw error;
