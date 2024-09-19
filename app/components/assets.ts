@@ -1,4 +1,4 @@
-export async function handleTeamNumberSubmit(teamNumber: string): Promise<any> {
+export async function handleTeamNumberSubmit(teamNumber: string): Promise<{ ans: string }> {
   try {
     // Trim whitespace and remove any non-digit characters
     const cleanedNumber = teamNumber.trim().replace(/\D/g, '');

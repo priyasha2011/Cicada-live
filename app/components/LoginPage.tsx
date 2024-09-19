@@ -177,8 +177,8 @@ const LoginPage = () => {
                         </Typography>
                     )}
                     <Typography variant="body2" sx={{ color: 'primary.main', textAlign: 'center', mt: 2 }}>
-                        "The key to immortality is first living a life worth remembering." - Bruce Lee
-                    </Typography>
+  &ldquo;The key to immortality is first living a life worth remembering.&rdquo; - Bruce Lee
+</Typography>
                 </Box>
             </Box>
         </ThemeProvider>

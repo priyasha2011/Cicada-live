@@ -111,7 +111,7 @@ const CorrectPage = () => {
   const [teamNumber, setTeamNumber] = useState('')
   const [openDialog, setOpenDialog] = useState(false)
   const [dialogMessage, setDialogMessage] = useState('')
-  const [isVerified, setIsVerified] = useState(false)
+  const [, setIsVerified] = useState(false)
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
