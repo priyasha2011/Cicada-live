@@ -1,4 +1,5 @@
 // Interface for the API response
+'use client'
 interface TeamNumberResponse {
   ans: string;
   success: boolean;
