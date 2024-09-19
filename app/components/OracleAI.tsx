@@ -119,15 +119,15 @@ const OracleAI = () => {
     const [showFinalImage, setShowFinalImage] = useState(false)
     const [countdown, setCountdown] = useState(10)
     const router = useRouter()
-    const [username, setUsername] = useState('')
+    
 
     useEffect(() => {
         const initializeApp = async () => {
             console.log('Initializing app...')
-            const storedUsername = localStorage.getItem('username')
-            if (storedUsername) {
-                setUsername(storedUsername)
-            }
+            
+            // if (storedUsername) {
+            //     setUsername(storedUsername)
+            // }
 
             const storedCounter = localStorage.getItem('counter')
             if (storedCounter) {
@@ -219,7 +219,7 @@ const OracleAI = () => {
     }
 
     const generateSet = () => {
-        let numbers = new Set<number>()
+        const numbers = new Set<number>()
         while (numbers.size < 5) {
             numbers.add(Math.floor(Math.random() * 200) + 1)
         }
@@ -355,8 +355,8 @@ const OracleAI = () => {
                         ))}
                     </Box>
                     <Typography variant="body1" sx={{ marginBottom: 2, whiteSpace: 'nowrap' }}>
-                        Cause he said once, "Genius is one of the many forms of insanity" <span style={{ display: 'inline-block', width: '15px', height: '20px', backgroundColor: '#33ff00', animation: 'blink 1s step-start infinite', verticalAlign: 'bottom' }}></span>
-                    </Typography>
+  Cause he said once, &ldquo;Genius is one of the many forms of insanity&rdquo; <span style={{ display: 'inline-block', width: '15px', height: '20px', backgroundColor: '#33ff00', animation: 'blink 1s step-start infinite', verticalAlign: 'bottom' }}></span>
+</Typography>
                 </Box>
 
                 {showWarning && (
