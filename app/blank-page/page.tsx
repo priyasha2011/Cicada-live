@@ -16,17 +16,31 @@ const fakeUrls = [
   "final-destination",
 ];
 
+const domainExtensions = [".com", ".net", ".org", ".io", ".tech", ".xyz"];
+
+const generateRandomDomain = () => {
+  const adjectives = ["mysterious", "secret", "hidden", "enigmatic", "puzzling", "cryptic"];
+  const nouns = ["realm", "portal", "gateway", "domain", "nexus", "hub"];
+  
+  const randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+  const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
+  const randomExtension = domainExtensions[Math.floor(Math.random() * domainExtensions.length)];
+  
+  return `https://${randomAdjective}${randomNoun}${randomExtension}`;
+};
+
 export default function BlankPage() {
   const router = useRouter();
   const [currentUrlIndex, setCurrentUrlIndex] = useState(0);
   const [randomizedUrls, setRandomizedUrls] = useState<string[]>([]);
+  const [randomDomain, setRandomDomain] = useState("");
 
   useEffect(() => {
-    
     setRandomizedUrls(shuffleArray([...fakeUrls]));
+    setRandomDomain(generateRandomDomain());
   }, []);
 
-  const shuffleArray = (array:string[]) => {
+  const shuffleArray = (array: string[]) => {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
@@ -38,7 +52,7 @@ export default function BlankPage() {
     if (currentUrlIndex < fakeUrls.length - 1) {
       const nextIndex = currentUrlIndex + 1;
       setCurrentUrlIndex(nextIndex);
-
+      setRandomDomain(generateRandomDomain());
       window.history.pushState({}, "", randomizedUrls[nextIndex]);
     } else {
       router.push("/sum");
@@ -67,27 +81,13 @@ export default function BlankPage() {
   }, [currentUrlIndex, randomizedUrls]);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-      }}
-    >
+    <div className="flex flex-col justify-center items-center h-screen bg-black">
       <button
         onClick={handleClick}
-        style={{
-          padding: "10px 20px",
-          background: "#0000",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-        }}
+        className="px-5 py-2.5 bg-transparent text-green-500 border border-green-500 rounded hover:bg-green-500 hover:text-black transition-colors duration-300"
       >
         {currentUrlIndex < fakeUrls.length - 1
-          ? "http://localhost:3000/" + randomizedUrls[currentUrlIndex + 1]
+          ? `${randomDomain}/${randomizedUrls[currentUrlIndex + 1]}`
           : "Back to Start"}
       </button>
     </div>

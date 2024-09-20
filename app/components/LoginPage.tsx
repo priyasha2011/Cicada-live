@@ -69,18 +69,18 @@ const LoginPage = () => {
         e.preventDefault()
         setIsLoading(true)
         setError('')
-
+    
         try {
             const response = await fetch('https://cicada-backend.vercel.app/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username, pass: password }),
+                body: JSON.stringify({ username, pass: password.toLowerCase() }),
             })
-
+    
             const data = await response.json()
-
+    
             if (response.ok) {
                 console.log('Login successful:', data)
                 // Store the username in localStorage
@@ -96,7 +96,6 @@ const LoginPage = () => {
             setIsLoading(false)
         }
     }
-
     return (
         <ThemeProvider theme={darkTheme}>
             <CssBaseline />

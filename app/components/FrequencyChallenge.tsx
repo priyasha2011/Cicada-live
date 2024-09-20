@@ -30,7 +30,7 @@ const FrequencyChallenge: React.FC = () => {
       setAlertMessage('Correct frequency code! Proceeding to the next challenge...');
       // Here you would typically redirect to the next challenge
       // For demo purposes, we'll just show an alert
-      router.push('/logout')
+      router.push('/outoftheworld');
     } else {
       setAlertMessage('Incorrect frequency code. Try again.');
     }

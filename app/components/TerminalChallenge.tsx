@@ -17,7 +17,6 @@ const TerminalChallenge: React.FC = () => {
     ];
 
     useEffect(() => {
-        
         setOutput([`CMD | PY`, steps[currentStep].question]);
     }, [currentStep]);
 
@@ -45,8 +44,7 @@ const TerminalChallenge: React.FC = () => {
         if (input.toLowerCase() === currentQuestion.correctAnswer) {
             if (currentStep === steps.length - 1) {
                 newOutput.push('Congratulations! You have completed the challenge.');
-                // Here you can add logic to move to the next stage of your game
-                router.push('/frequency')
+                router.push('/frequency');
             } else {
                 newOutput.push('Correct!');
                 setCurrentStep(currentStep + 1);
@@ -57,8 +55,9 @@ const TerminalChallenge: React.FC = () => {
             newOutput.push('Incorrect. Please try again.');
             setAttempts(attempts + 1);
 
-            if (attempts >= 4 && currentStep === 1) {
-                router.push('/login');
+            if (attempts >= 3) {  // This is the 4th attempt (0, 1, 2, 3)
+                newOutput.push('Too many incorrect attempts. Redirecting to login page...');
+                setTimeout(() => router.push('/worldofcrypts'), 2000);  // Redirect after 2 seconds
             }
         }
 

@@ -163,7 +163,7 @@ const OracleAI = () => {
                     if (prevCount <= 1) {
                         clearInterval(timer)
                         setTimeout(() => {
-                            router.push('/login')
+                            router.push('/worldofcrypts')
                         }, 1000) 
                         return 0
                 
@@ -210,7 +210,7 @@ const OracleAI = () => {
         } else {
             setDialogMessage("Incorrect answer. Please try again.")
             setOpenDialog(true)
-            router.push('/login')
+            router.push('/worldofcrypts')
         }
     }
 
